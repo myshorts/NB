@@ -1,0 +1,569 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--green:#1a7a4a;--green-light:#e8f5ee;--green-mid:#2d9e64;--gold:#c8963e;--gold-light:#fdf3e7;--dark:#0d1f14;--dark2:#1a2e1e;--text:#1a2e1e;--text2:#4a6550;--text3:#7a9a82;--bg:#f8fdf9;--card:#ffffff;--border:#d4e8da;--radius:16px;--shadow:0 2px 20px rgba(26,42,30,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(248,253,249,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 16px}
+.nav-inner{max-width:900px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--green);white-space:nowrap}
+.logo span{color:var(--gold)}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;padding:7px 11px;border-radius:10px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.tab-btn.active,.tab-btn:hover{background:var(--green-light);color:var(--green)}
+.tab-btn.active{font-weight:600}
+
+.hero{position:relative;height:380px;display:flex;align-items:flex-end;overflow:hidden;background:linear-gradient(135deg,#0d2b1a 0%,#1a4a2e 40%,#0f3d24 100%)}
+.hero-bg{position:absolute;inset:0;opacity:0.15;background-image:radial-gradient(circle at 20% 50%,#2d9e64 0%,transparent 50%),radial-gradient(circle at 80% 20%,#c8963e 0%,transparent 40%)}
+.hero-mountains{position:absolute;bottom:0;left:0;right:0;height:180px}
+.hero-content{position:relative;z-index:2;padding:32px;max-width:900px;margin:0 auto;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(200,150,62,0.2);border:1px solid rgba(200,150,62,0.4);color:#e8b86d;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:12px}
+.hero h1{font-family:'Playfair Display',serif;font-size:46px;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:6px}
+.hero h1 span{color:#e8b86d}
+.hero-sub{color:rgba(255,255,255,0.6);font-size:14px;margin-bottom:20px}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap}
+.hero-stat-num{font-size:20px;font-weight:700;color:#fff}
+.hero-stat-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+
+.countdown-bar{background:var(--dark2);border-bottom:1px solid #1a3020;padding:10px 16px}
+.countdown-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.countdown-label{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-bottom:4px}
+.countdown-units{display:flex;gap:12px}
+.cd-num{font-size:18px;font-weight:700;color:#e8b86d}
+.cd-lbl{font-size:10px;color:rgba(255,255,255,0.35);margin-top:1px}
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-lbl{font-size:11px;color:rgba(255,255,255,0.4)}
+.prog-track{width:140px;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),var(--gold));border-radius:3px}
+.prog-pct{font-size:11px;font-weight:600;color:#e8b86d}
+
+.main{max-width:900px;margin:0 auto;padding:28px 16px}
+.section{display:none}.section.active{display:block}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:18px;letter-spacing:-0.5px}
+.section-title span{color:var(--green)}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:transform 0.2s}
+.dash-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.dash-card-icon{font-size:22px;margin-bottom:10px}
+.dash-card-num{font-size:24px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.dash-card-label{font-size:12px;color:var(--text3);margin-top:3px}
+.dash-card.gold .dash-card-num{color:var(--gold)}
+.info-row{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-around;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.info-item{text-align:center}
+.info-val{font-size:14px;font-weight:600;color:var(--text)}
+.info-key{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* TIMELINE */
+.day-tabs{display:flex;gap:8px;margin-bottom:20px}
+.day-tab{padding:8px 18px;border-radius:24px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;color:var(--text2)}
+.day-tab.active{background:var(--green);border-color:var(--green);color:#fff}
+.timeline{position:relative;padding-left:36px}
+.timeline::before{content:'';position:absolute;left:13px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--green),var(--border))}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-29px;width:14px;height:14px;border-radius:50%;background:var(--green);border:3px solid var(--bg);top:16px;z-index:1}
+.tl-dot.food{background:var(--gold)}
+.tl-dot.photo{background:#7c4dff}
+.tl-dot.rest{background:#e91e63}
+.tl-dot.highlight{background:#e91e63;box-shadow:0 0 0 4px rgba(233,30,99,0.2)}
+.tl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all 0.2s}
+.tl-card:hover{border-color:var(--green);box-shadow:var(--shadow)}
+.tl-card.highlight{border-color:#7c4dff;background:#fafaff}
+.tl-card.new-item{border-color:var(--green);background:var(--green-light)}
+.tl-time{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.5px;margin-bottom:3px}
+.tl-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.tl-emoji{font-size:17px}
+.tl-new-badge{font-size:10px;font-weight:700;background:#e8f5ee;color:var(--green);padding:2px 7px;border-radius:8px;border:1px solid var(--green)}
+.tl-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.tl-tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.tag{padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.tag.green{background:var(--green-light);color:var(--green)}
+.tag.gold{background:var(--gold-light);color:#a07028}
+.tag.purple{background:#f3f0ff;color:#5c35d4}
+.tag.pink{background:#fce7f3;color:#831843}
+
+/* HOTEL CARDS */
+.hotel-grid{display:grid;gap:14px}
+.hotel-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.2s;cursor:pointer}
+.hotel-card:hover{border-color:var(--green);box-shadow:var(--shadow);transform:translateY(-1px)}
+.hotel-card.top-pick{border-color:#e8b86d;border-width:2px}
+.hotel-photo{height:160px;background:linear-gradient(135deg,#1a4a2e,#2d9e64);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.hotel-photo-emoji{font-size:48px;opacity:0.5}
+.hotel-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.hotel-badge-top{position:absolute;top:10px;left:10px;background:#e8b86d;color:#4a2800;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+.hotel-body{padding:16px}
+.hotel-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.hotel-type{font-size:12px;color:var(--text3);margin-bottom:8px}
+.hotel-rating{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.hotel-stars{color:#f59e0b;font-size:13px}
+.hotel-score{font-size:14px;font-weight:700;color:var(--text)}
+.hotel-count{font-size:12px;color:var(--text3)}
+.hotel-highlights{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.hotel-highlight{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--green-light);color:var(--green);font-weight:500}
+.hotel-footer{display:flex;align-items:center;justify-content:space-between}
+.hotel-price{font-size:14px;font-weight:700;color:var(--gold)}
+.hotel-price span{font-size:11px;color:var(--text3);font-weight:400}
+.hotel-btn{background:var(--green);color:#fff;border:none;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.hotel-btn:hover{background:#155c37}
+.hotel-meta{font-size:12px;color:var(--text2);display:flex;gap:10px;align-items:center;margin-bottom:4px}
+
+/* GALLERY */
+.gallery-grid{columns:2;gap:10px}
+.gallery-img{width:100%;margin-bottom:10px;border-radius:12px;overflow:hidden;cursor:pointer;break-inside:avoid;transition:transform 0.2s}
+.gallery-img:hover{transform:scale(1.02)}
+.gal-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px}
+.gal-icon{font-size:28px}
+.gal-name{color:rgba(255,255,255,0.9);font-size:12px;font-weight:600;margin-top:6px;text-align:center;padding:0 8px}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.lightbox.hidden{display:none}
+.lb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;border-radius:50%;width:40px;height:40px;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-box{max-width:560px;width:100%;background:#1a2e1e;border-radius:18px;overflow:hidden}
+.lb-photo{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:52px}
+.lb-info{padding:18px}
+.lb-name{font-size:17px;font-weight:700;color:#fff;margin-bottom:5px}
+.lb-desc{font-size:13px;color:rgba(255,255,255,0.6)}
+
+/* FOOD */
+.food-grid{display:grid;gap:12px}
+.food-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;gap:14px;transition:all 0.2s}
+.food-card:hover{border-color:var(--green);box-shadow:var(--shadow)}
+.food-icon{width:52px;height:52px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.food-info{flex:1}
+.food-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.food-type{font-size:12px;color:var(--text3);margin-bottom:6px}
+.stars{font-size:13px;margin-bottom:6px}
+.food-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e}
+.food-badge.must{background:#fce7f3;color:#831843}
+.food-price{font-size:13px;font-weight:600;color:var(--gold);align-self:flex-start}
+
+/* BUDGET */
+.budget-summary{background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:14px;padding:22px;margin-bottom:16px;color:#fff}
+.budget-total{font-size:32px;font-weight:700;color:#e8b86d;letter-spacing:-1px}
+.budget-lbl{font-size:12px;color:rgba(255,255,255,0.4);margin-top:3px}
+.budget-per{font-size:14px;color:rgba(255,255,255,0.6);margin-top:7px}
+.budget-per span{color:#7dd3a8;font-weight:600}
+.budget-items{display:grid;gap:10px}
+.bitem{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.bitem-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.bitem-info{flex:1}
+.bitem-name{font-size:13px;font-weight:600;color:var(--text)}
+.bitem-detail{font-size:11px;color:var(--text3);margin-top:2px}
+.bitem-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:7px}
+.bitem-fill{height:100%;border-radius:2px}
+.bitem-amt{font-size:14px;font-weight:700;color:var(--text);text-align:right}
+.bitem-pct{font-size:11px;color:var(--text3);text-align:right;margin-top:2px}
+
+/* CHECKLIST */
+.check-prog{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.check-prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.check-prog-lbl{font-size:13px;font-weight:500;color:var(--text2)}
+.check-prog-pct{font-size:14px;font-weight:700;color:var(--green)}
+.check-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.check-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),#4caf50);border-radius:4px;transition:width 0.4s ease}
+.check-section-title{font-size:12px;font-weight:600;color:var(--text3);letter-spacing:0.5px;text-transform:uppercase;margin:16px 0 10px}
+.check-items{display:grid;gap:7px}
+.check-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s}
+.check-item:hover,.check-item.checked{border-color:var(--green)}
+.check-item.checked{background:var(--green-light)}
+.check-item.checked .check-name{color:var(--green);text-decoration:line-through;text-decoration-color:var(--green)}
+.check-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green)}
+.check-mark{color:#fff;font-size:11px;font-weight:700}
+.check-name{font-size:13px;font-weight:500;color:var(--text);flex:1}
+.check-icon{font-size:16px}
+
+/* MAP */
+.map-list{display:grid;gap:10px}
+.map-place{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s}
+.map-place:hover{border-color:var(--green);box-shadow:var(--shadow)}
+.map-num{width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.map-place-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.map-place-meta{font-size:11px;color:var(--text3);display:flex;gap:8px}
+.map-btn{background:var(--green-light);border:none;border-radius:9px;padding:7px 12px;font-size:11px;font-weight:600;color:var(--green);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.map-btn:hover{background:var(--green);color:#fff}
+
+@media(max-width:600px){
+  .hero h1{font-size:32px}
+  .dash-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-stats{gap:16px}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.section.active > *{animation:fadeUp 0.35s ease forwards}
+</style>
+</head>
+<body>
+<h2 class="sr-only">Lịch trình du lịch Ninh Bình 2 ngày 1 đêm</h2>
+
+<!-- NAV -->
+<nav>
+<div class="nav-inner">
+  <div class="logo">Ninh <span>Bình</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="show('dashboard')">Tổng quan</button>
+    <button class="tab-btn" onclick="show('timeline')">Lịch trình</button>
+    <button class="tab-btn" onclick="show('hotel')">Chỗ ở</button>
+    <button class="tab-btn" onclick="show('food')">Ẩm thực</button>
+    <button class="tab-btn" onclick="show('gallery')">Ảnh đẹp</button>
+    <button class="tab-btn" onclick="show('budget')">Ngân sách</button>
+    <button class="tab-btn" onclick="show('checklist')">Checklist</button>
+    <button class="tab-btn" onclick="show('map')">Bản đồ</button>
+  </div>
+</div>
+</nav>
+
+<!-- COUNTDOWN -->
+<div class="countdown-bar">
+<div class="countdown-inner">
+  <div>
+    <div class="countdown-label">KHỞI HÀNH TRONG</div>
+    <div class="countdown-units">
+      <div><div class="cd-num" id="cd-d">--</div><div class="cd-lbl">ngày</div></div>
+      <div><div class="cd-num" id="cd-h">--</div><div class="cd-lbl">giờ</div></div>
+      <div><div class="cd-num" id="cd-m">--</div><div class="cd-lbl">phút</div></div>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <span class="prog-lbl">Chuẩn bị</span>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <span class="prog-pct" id="prog-pct">0%</span>
+  </div>
+</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+<div class="hero-bg"></div>
+<svg class="hero-mountains" viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <path d="M0,180 L0,110 Q60,50 120,75 Q180,98 240,30 Q300,-20 360,60 Q420,130 480,60 Q540,10 600,85 Q660,148 720,70 Q780,10 840,90 Q880,140 900,100 L900,180 Z" fill="rgba(255,255,255,0.04)"/>
+  <path d="M0,180 L0,145 Q90,100 180,125 Q270,148 360,95 Q450,50 540,128 Q630,185 720,115 Q800,62 900,140 L900,180 Z" fill="rgba(255,255,255,0.06)"/>
+</svg>
+<div class="hero-content">
+  <div class="hero-badge">✦ 20 – 21 THÁNG 7, 2025</div>
+  <h1>Ninh <span>Bình</span></h1>
+  <div class="hero-sub">2 ngày 1 đêm · Cố đô · Sông núi · Hang động</div>
+  <div class="hero-stats">
+    <div><div class="hero-stat-num">14</div><div class="hero-stat-label">Địa điểm</div></div>
+    <div><div class="hero-stat-num">20</div><div class="hero-stat-label">Photo Spots</div></div>
+    <div><div class="hero-stat-num">10</div><div class="hero-stat-label">Món ăn</div></div>
+    <div><div class="hero-stat-num">4</div><div class="hero-stat-label">Homestay gợi ý</div></div>
+  </div>
+</div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="section active" id="section-dashboard">
+  <div class="dash-grid">
+    <div class="dash-card"><div class="dash-card-icon">📍</div><div class="dash-card-num">14</div><div class="dash-card-label">Địa điểm</div></div>
+    <div class="dash-card"><div class="dash-card-icon">📸</div><div class="dash-card-num">20</div><div class="dash-card-label">Photo spots</div></div>
+    <div class="dash-card gold"><div class="dash-card-icon">💰</div><div class="dash-card-num">5tr</div><div class="dash-card-label">Ngân sách 2 người</div></div>
+    <div class="dash-card"><div class="dash-card-icon">🏠</div><div class="dash-card-num">4</div><div class="dash-card-label">Homestay gợi ý</div></div>
+  </div>
+  <div class="info-row">
+    <div class="info-item"><div class="info-val">🚀 20/7</div><div class="info-key">Khởi hành</div></div>
+    <div class="info-item"><div class="info-val">🏠 21/7</div><div class="info-key">Về nhà</div></div>
+    <div class="info-item"><div class="info-val">🌤️ 32°C</div><div class="info-key">Thời tiết</div></div>
+    <div class="info-item"><div class="info-val">🚗 3h</div><div class="info-key">Từ HN</div></div>
+    <div class="info-item"><div class="info-val">⭐ 4.9</div><div class="info-key">Homestay top</div></div>
+  </div>
+  <div class="section-title">Điểm mới <span>thêm vào</span></div>
+  <div style="display:grid;gap:10px">
+    <div class="food-card" style="cursor:default;border-color:#7c4dff;background:#fafaff">
+      <div class="food-icon" style="background:#f0eeff;font-size:26px">☕</div>
+      <div class="food-info">
+        <div class="food-name">Highlands Coffee – Tràng An</div>
+        <div class="food-type">Ngày 1 · 07:30 sáng · View núi đá vôi cực đẹp</div>
+        <div class="tl-tags"><span class="tag purple">Photo spot mới</span><span class="tag green">Mở 7AM</span></div>
+      </div>
+    </div>
+    <div class="food-card" style="cursor:default;border-color:#1a7a4a;background:var(--green-light)">
+      <div class="food-icon" style="background:#d0ede0;font-size:26px">🏞️</div>
+      <div class="food-info">
+        <div class="food-name">Hồ Đồng Chương</div>
+        <div class="food-type">Ngày 2 · 06:00 sáng · Hồ yên tĩnh, sương mờ buổi sớm</div>
+        <div class="tl-tags"><span class="tag green">Mới thêm</span><span class="tag purple">Bình minh</span></div>
+      </div>
+    </div>
+    <div class="food-card" style="cursor:default;border-color:var(--gold)">
+      <div class="food-icon">🏠</div>
+      <div class="food-info">
+        <div class="food-name">Lotus Field Homestay · D&D Riverside · Chian · Lagom</div>
+        <div class="food-type">4 lựa chọn chỗ ở khu Hoa Lư – xem tab Chỗ ở để so sánh</div>
+        <div class="tl-tags"><span class="tag gold">Hoa Lư</span><span class="tag green">⭐ 4.8 – 4.9</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<div class="section" id="section-timeline">
+  <div class="section-title">Lịch trình <span>chi tiết</span></div>
+  <div class="day-tabs">
+    <button class="day-tab active" onclick="showDay(1)">Ngày 1 · 20/7</button>
+    <button class="day-tab" onclick="showDay(2)">Ngày 2 · 21/7</button>
+  </div>
+
+  <div id="day1" class="timeline">
+    <div class="tl-item"><div class="tl-dot food"></div><div class="tl-card"><div class="tl-time">05:30 · KHỞI HÀNH</div><div class="tl-title"><span class="tl-emoji">🚗</span>Xuất phát từ Hà Nội</div><div class="tl-desc">Đi xe máy hoặc thuê xe. Đường QL1A, ~3 tiếng, đường đẹp thoáng.</div><div class="tl-tags"><span class="tag green">Tự túc</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot photo highlight"></div><div class="tl-card new-item highlight"><div class="tl-time">07:30 · CÀ PHÊ + CHỤP ẢNH <span class="tl-new-badge">✦ MỚI</span></div><div class="tl-title"><span class="tl-emoji">☕</span>Highlands Coffee – Tràng An</div><div class="tl-desc">View nhìn ra núi đá vôi và ruộng lúa Tràng An – cực đẹp buổi sáng sớm. Mở cửa 7AM, order đồ uống xong ra ngoài chụp ảnh. Nắng sáng rất đẹp cho máy ảnh.</div><div class="tl-tags"><span class="tag purple">Photo spot</span><span class="tag green">7AM mở cửa</span><span class="tag gold">View núi</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot food"></div><div class="tl-card"><div class="tl-time">08:30 · ĂN SÁNG</div><div class="tl-title"><span class="tl-emoji">🍜</span>Bánh cuốn / Bún bò gần Tràng An</div><div class="tl-desc">Quán địa phương quanh khu Tràng An. ~35.000đ/người.</div><div class="tl-tags"><span class="tag gold">Ăn uống</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-time">09:30 – 12:00 · THAM QUAN</div><div class="tl-title"><span class="tl-emoji">🏔️</span>Tuyệt Tịnh Cốc</div><div class="tl-desc">Hồ xanh giữa vách núi đá vôi. Thuê xe đạp hoặc đi bộ. Vé vào cổng 30.000đ. Điểm chụp ảnh đỉnh nhất Ninh Bình hiện tại!</div><div class="tl-tags"><span class="tag purple">Photo spot</span><span class="tag green">Check-in hot</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot food"></div><div class="tl-card"><div class="tl-time">12:30 · ĂN TRƯA</div><div class="tl-title"><span class="tl-emoji">🐐</span>Dê Chính Thư</div><div class="tl-desc">Nhà hàng thịt dê nổi tiếng nhất Ninh Bình. Dê tái chanh, dê nướng. ~200.000đ/người.</div><div class="tl-tags"><span class="tag gold">Đặc sản</span><span class="tag pink">Must eat</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-time">14:00 – 17:00 · THAM QUAN</div><div class="tl-title"><span class="tl-emoji">🚣</span>Tràng An – Bái Đính</div><div class="tl-desc">Chèo thuyền qua hang động (90 phút). Vé 300.000đ/người gồm thuyền. Di sản UNESCO!</div><div class="tl-tags"><span class="tag green">UNESCO</span><span class="tag gold">Thuyền</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot rest"></div><div class="tl-card"><div class="tl-time">17:30 · NHẬN PHÒNG</div><div class="tl-title"><span class="tl-emoji">🏠</span>Check-in Homestay – khu Hoa Lư</div><div class="tl-desc">Lotus Field, D&D Riverside, Chian hoặc Lagom. Xem tab Chỗ ở để chọn phù hợp nhất.</div><div class="tl-tags"><span class="tag green">Hoa Lư</span><span class="tag gold">Nghỉ ngơi</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot food"></div><div class="tl-card"><div class="tl-time">19:00 · ĂN TỐI</div><div class="tl-title"><span class="tl-emoji">🥩</span>Mộc An Quán</div><div class="tl-desc">BBQ thịt dê và đặc sản địa phương. Không khí đẹp, nên đặt bàn trước!</div><div class="tl-tags"><span class="tag gold">BBQ</span><span class="tag purple">★★★★★</span></div></div></div>
+  </div>
+
+  <div id="day2" class="timeline" style="display:none">
+    <div class="tl-item"><div class="tl-dot photo highlight"></div><div class="tl-card new-item highlight"><div class="tl-time">05:45 · BÌNH MINH <span class="tl-new-badge">✦ MỚI</span></div><div class="tl-title"><span class="tl-emoji">🏞️</span>Hồ Đồng Chương</div><div class="tl-desc">Dậy sớm ra hồ Đồng Chương – mặt hồ rộng lớn, sương mờ buổi sáng, cực yên tĩnh và thơ mộng. Cách trung tâm Ninh Bình khoảng 15km về phía Tây.</div><div class="tl-tags"><span class="tag purple">Bình minh</span><span class="tag green">Mới thêm</span><span class="tag gold">Yên tĩnh</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot food"></div><div class="tl-card"><div class="tl-time">07:30 · ĂN SÁNG</div><div class="tl-title"><span class="tl-emoji">🍚</span>Cơm cháy Ninh Bình</div><div class="tl-desc">Đặc sản cơm cháy chảo đá – ăn với canh chua hoặc thịt bò. Nhất định phải thử!</div><div class="tl-tags"><span class="tag gold">Đặc sản</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-time">09:00 – 11:00 · THAM QUAN</div><div class="tl-title"><span class="tl-emoji">⛩️</span>Cố đô Hoa Lư</div><div class="tl-desc">Kinh đô đầu tiên của Việt Nam. Đền thờ Đinh Tiên Hoàng và Lê Đại Hành. Vé 20.000đ.</div><div class="tl-tags"><span class="tag green">Lịch sử</span><span class="tag gold">Di tích</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-time">11:30 – 13:00 · THAM QUAN</div><div class="tl-title"><span class="tl-emoji">🌿</span>Hang Múa</div><div class="tl-desc">Leo 500 bậc thang lên đỉnh – nhìn được toàn cảnh Ninh Bình và đồng lúa bên dưới.</div><div class="tl-tags"><span class="tag purple">Panorama</span><span class="tag green">Toàn cảnh</span></div></div></div>
+
+    <div class="tl-item"><div class="tl-dot food"></div><div class="tl-card"><div class="tl-time">13:30 · ĂN TRƯA + CHECKOUT</div><div class="tl-title"><span class="tl-emoji">🍜</span>Ăn trưa nhẹ rồi về Hà Nội</div><div class="tl-desc">Mua cơm cháy đặc sản về làm quà. Xuất phát về Hà Nội lúc 14:30.</div><div class="tl-tags"><span class="tag green">Về HN</span></div></div></div>
+  </div>
+</div>
+
+<!-- HOTEL -->
+<div class="section" id="section-hotel">
+  <div class="section-title">Chỗ ở <span>khu Hoa Lư</span></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6">4 lựa chọn được lọc từ Google Maps – tất cả trong khu vực Hoa Lư, gần các điểm tham quan chính. Đánh giá thực tế từ khách.</p>
+  <div class="hotel-grid" id="hotel-grid"></div>
+</div>
+
+<!-- FOOD -->
+<div class="section" id="section-food">
+  <div class="section-title">Ẩm thực <span>Ninh Bình</span></div>
+  <div class="food-grid">
+    <div class="food-card"><div class="food-icon">🐐</div><div class="food-info"><div class="food-name">Dê Chính Thư</div><div class="food-type">Dê tái chanh · Dê nướng · Tiết canh</div><div class="stars">⭐⭐⭐⭐⭐</div><span class="food-badge must">Bắt buộc thử</span></div><div class="food-price">~200k/người</div></div>
+    <div class="food-card"><div class="food-icon">🥩</div><div class="food-info"><div class="food-name">Mộc An Quán</div><div class="food-type">BBQ thịt dê đặc sản · Không khí đẹp</div><div class="stars">⭐⭐⭐⭐⭐</div><span class="food-badge must">Top 1 Ninh Bình</span></div><div class="food-price">~250k/người</div></div>
+    <div class="food-card"><div class="food-icon">🍚</div><div class="food-info"><div class="food-name">Cơm cháy chảo đá</div><div class="food-type">Đặc sản nổi tiếng nhất · Giòn tan</div><div class="stars">⭐⭐⭐⭐⭐</div><span class="food-badge must">Iconic Ninh Bình</span></div><div class="food-price">~80k/suất</div></div>
+    <div class="food-card"><div class="food-icon">☕</div><div class="food-info"><div class="food-name">Highlands Coffee – Tràng An</div><div class="food-type">Cà phê sáng · View núi đá · Photo spot</div><div class="stars">⭐⭐⭐⭐☆</div><span class="food-badge" style="background:#f3f0ff;color:#5c35d4">Photo spot</span></div><div class="food-price">~70k/ly</div></div>
+    <div class="food-card"><div class="food-icon">🐟</div><div class="food-info"><div class="food-name">Cá rô đầm Vân Long</div><div class="food-type">Cá tươi kho tộ · Chiên giòn</div><div class="stars">⭐⭐⭐⭐☆</div><span class="food-badge" style="background:var(--green-light);color:var(--green)">Local secret</span></div><div class="food-price">~150k/con</div></div>
+    <div class="food-card"><div class="food-icon">🥘</div><div class="food-info"><div class="food-name">Ốc núi rang muối</div><div class="food-type">Ốc núi đặc trưng vùng Ninh Bình</div><div class="stars">⭐⭐⭐⭐☆</div><span class="food-badge">Đặc sản vùng</span></div><div class="food-price">~60k/đĩa</div></div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="section" id="section-gallery">
+  <div class="section-title">Điểm <span>check-in đẹp</span></div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</div>
+<div class="lightbox hidden" id="lightbox" onclick="closeLB()">
+  <button class="lb-close" onclick="closeLB()">✕</button>
+  <div class="lb-box" onclick="event.stopPropagation()">
+    <div class="lb-photo" id="lb-photo"></div>
+    <div class="lb-info"><div class="lb-name" id="lb-name"></div><div class="lb-desc" id="lb-desc"></div></div>
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div class="section" id="section-budget">
+  <div class="section-title">Ngân sách <span>2 người</span></div>
+  <div class="budget-summary">
+    <div class="budget-lbl">TỔNG CHI PHÍ ƯỚC TÍNH</div>
+    <div class="budget-total">5.000.000 đ</div>
+    <div class="budget-per">Mỗi người: <span>~2.500.000 đ</span></div>
+  </div>
+  <div class="budget-items">
+    <div class="bitem"><div class="bitem-icon" style="background:#e8f5ee">🚗</div><div class="bitem-info"><div class="bitem-name">Đi lại (xăng + phí đường)</div><div class="bitem-detail">HN → NB → HN · ~300km</div><div class="bitem-bar"><div class="bitem-fill" style="width:20%;background:linear-gradient(90deg,#1a7a4a,#2d9e64)"></div></div></div><div><div class="bitem-amt">1.000.000 đ</div><div class="bitem-pct">20%</div></div></div>
+    <div class="bitem"><div class="bitem-icon" style="background:#fdf3e7">🏠</div><div class="bitem-info"><div class="bitem-name">Homestay Hoa Lư</div><div class="bitem-detail">1 đêm · 2 người · Lotus Field / D&D Riverside</div><div class="bitem-bar"><div class="bitem-fill" style="width:16%;background:linear-gradient(90deg,#c8963e,#e8b86d)"></div></div></div><div><div class="bitem-amt">800.000 đ</div><div class="bitem-pct">16%</div></div></div>
+    <div class="bitem"><div class="bitem-icon" style="background:#fce7f3">🍜</div><div class="bitem-info"><div class="bitem-name">Ăn uống</div><div class="bitem-detail">6 bữa × 2 người · Dê, cơm cháy, Highlands, đặc sản</div><div class="bitem-bar"><div class="bitem-fill" style="width:36%;background:linear-gradient(90deg,#e91e63,#f06292)"></div></div></div><div><div class="bitem-amt">1.800.000 đ</div><div class="bitem-pct">36%</div></div></div>
+    <div class="bitem"><div class="bitem-icon" style="background:#f3f0ff">🎫</div><div class="bitem-info"><div class="bitem-name">Vé tham quan</div><div class="bitem-detail">Tràng An, Tuyệt Tịnh Cốc, Bái Đính, Hang Múa, Hoa Lư</div><div class="bitem-bar"><div class="bitem-fill" style="width:18%;background:linear-gradient(90deg,#7c4dff,#9c7bff)"></div></div></div><div><div class="bitem-amt">900.000 đ</div><div class="bitem-pct">18%</div></div></div>
+    <div class="bitem"><div class="bitem-icon" style="background:#e3f2fd">🛍️</div><div class="bitem-info"><div class="bitem-name">Quà & linh tinh</div><div class="bitem-detail">Cơm cháy đặc sản, đồ lưu niệm, cafe</div><div class="bitem-bar"><div class="bitem-fill" style="width:10%;background:linear-gradient(90deg,#2196f3,#64b5f6)"></div></div></div><div><div class="bitem-amt">500.000 đ</div><div class="bitem-pct">10%</div></div></div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div class="section" id="section-checklist">
+  <div class="section-title">Checklist <span>chuẩn bị</span></div>
+  <div class="check-prog">
+    <div class="check-prog-top"><span class="check-prog-lbl">Tiến độ chuẩn bị</span><span class="check-prog-pct" id="check-pct">0%</span></div>
+    <div class="check-track"><div class="check-fill" id="check-bar" style="width:0%"></div></div>
+  </div>
+  <div class="check-section-title">Giấy tờ & đặt chỗ</div><div class="check-items" id="cl1"></div>
+  <div class="check-section-title">Máy ảnh & thiết bị</div><div class="check-items" id="cl2"></div>
+  <div class="check-section-title">Quần áo & cá nhân</div><div class="check-items" id="cl3"></div>
+</div>
+
+<!-- MAP -->
+<div class="section" id="section-map">
+  <div class="section-title">Bản đồ <span>địa điểm</span></div>
+  <div class="map-list" id="map-list"></div>
+</div>
+
+</div>
+
+<script>
+const HOTELS = [
+  {name:'Lotus Field Homestay',type:'Homestay · Bên ruộng sen',rating:4.9,count:335,price:'600k–800k',unit:'/đêm',phone:'+84 983 563 066',booking:'https://www.booking.com/hotel/vn/lotus-field-homestay-ninh-binh1.vi.html',maps:'https://maps.google.com/?cid=1893025661225924818',highlights:['View núi + ruộng sen','Pool đỉnh','Bữa sáng ngon','Xe đạp thuê'],desc:'Top 1 được review nhiều nhất. Phòng bên ruộng sen + bồn tắm nhìn ra núi. Staff rất nhiệt tình. Gần Hang Múa và Tràng An.',icon:'🌸',topPick:true,emoji_bg:'linear-gradient(135deg,#1a4a2e,#2d7a4a)'},
+  {name:'D&D Riverside Homestay',type:'Homestay · Bên sông',rating:4.9,count:215,price:'500k–700k',unit:'/đêm',phone:'+84 964 501 616',booking:'https://ddriversidehomestay.top/',maps:'https://maps.google.com/?cid=7055022147921628874',highlights:['Bên sông yên tĩnh','Pool đẹp','Xe đạp/xe máy','Gần Hang Múa'],desc:'Homestay gia đình rất thân thiện. Phòng rộng rãi, sạch sẽ. Đi bộ 10 phút tới Hang Múa, đạp xe 3km ra Tràng An.',icon:'🏞️',topPick:true,emoji_bg:'linear-gradient(135deg,#0a3d6b,#1565c0)'},
+  {name:'Chian Homestay Hoa Lư',type:'Homestay · Trung tâm',rating:4.8,count:89,price:'400k–600k',unit:'/đêm',phone:'+84 973 030 110',booking:'https://www.chianhomes.com/',maps:'https://maps.google.com/?cid=2160025166132542915',highlights:['10 phút ra phố cổ','Pool','Đường Đinh Điền','Giá tốt'],desc:'Ngay trung tâm Hoa Lư, 10 phút đi bộ ra khu phố cổ. Không gian thiết kế đẹp, phòng sáng. Lựa chọn tốt nếu muốn đi lại thuận tiện.',icon:'🏡',topPick:false,emoji_bg:'linear-gradient(135deg,#4a2c0d,#8d4e15)'},
+  {name:'Lagom Ninh Bình Homestay',type:'Homestay · Gần Tràng An',rating:4.3,count:100,price:'350k–550k',unit:'/đêm',phone:'+84 967 222 436',booking:'https://www.facebook.com/profile.php?id=100093043988682',maps:'https://maps.google.com/?cid=11300162645152236811',highlights:['Gần Tràng An','Pool + câu cá','Giá rẻ nhất','Không gian rộng'],desc:'Gần Tràng An nhất trong 4 lựa chọn. Pool rộng, có thể câu cá miễn phí. Phù hợp nếu ngân sách ưu tiên và muốn tiện tham quan Tràng An sáng sớm.',icon:'🌿',topPick:false,emoji_bg:'linear-gradient(135deg,#1a3a1a,#2d6b2d)'},
+];
+
+const SPOTS = [
+  {icon:'☕',name:'Highlands Coffee – Tràng An',desc:'View núi đá vôi cực đẹp buổi sáng sớm – mở 7AM',c1:'#1a3a50',c2:'#2d6b8d',ratio:'16/9'},
+  {icon:'🏔️',name:'Tuyệt Tịnh Cốc',desc:'Hồ xanh giữa vách núi đá vôi – cảnh đẹp nhất Ninh Bình',c1:'#0d4a2e',c2:'#1a7a4a',ratio:'3/4'},
+  {icon:'🚣',name:'Tràng An',desc:'Di sản UNESCO – chèo thuyền qua hang động và núi non',c1:'#0a3d6b',c2:'#1565c0',ratio:'16/9'},
+  {icon:'⛩️',name:'Cố đô Hoa Lư',desc:'Kinh đô cổ đại với đền thờ vua Đinh, vua Lê',c1:'#4a2c0d',c2:'#8d4e15',ratio:'4/3'},
+  {icon:'🌿',name:'Hang Múa',desc:'500 bậc thang – nhìn được toàn cảnh Ninh Bình từ đỉnh',c1:'#1a4a2e',c2:'#2e7d4a',ratio:'3/4'},
+  {icon:'🏞️',name:'Hồ Đồng Chương',desc:'Hồ rộng lớn, sương sớm yên tĩnh – bình minh cực đẹp',c1:'#0a2a4a',c2:'#155a8d',ratio:'16/9'},
+  {icon:'🛕',name:'Chùa Bái Đính',desc:'Chùa lớn nhất Đông Nam Á – mái ngói nâu vàng cổ kính',c1:'#4a3a0d',c2:'#8d6e15',ratio:'4/3'},
+  {icon:'🌊',name:'Tam Cốc',desc:'Thuyền nan trên sông Ngô Đồng – cảnh sáng sớm thơ mộng',c1:'#0d2a4a',c2:'#155a8d',ratio:'3/4'},
+];
+
+const PLACES = [
+  {name:'Highlands Coffee – Tràng An',type:'Cà phê · Photo spot',dist:'Khu du lịch Tràng An',maps:'https://maps.google.com/?cid=6628788676516437542'},
+  {name:'Tuyệt Tịnh Cốc',type:'Địa điểm check-in',dist:'9km từ TT Ninh Bình',maps:'https://maps.google.com/?q=Tuyet+Tinh+Coc+Ninh+Binh'},
+  {name:'Tràng An',type:'Di sản UNESCO',dist:'7km từ TT Ninh Bình',maps:'https://maps.google.com/?q=Trang+An+Ninh+Binh'},
+  {name:'Hồ Đồng Chương',type:'Hồ nước thiên nhiên',dist:'15km từ TT Ninh Bình',maps:'https://maps.google.com/?cid=15799652102856040276'},
+  {name:'Cố đô Hoa Lư',type:'Di tích lịch sử',dist:'12km từ TT Ninh Bình',maps:'https://maps.google.com/?q=Co+Do+Hoa+Lu+Ninh+Binh'},
+  {name:'Hang Múa',type:'Thắng cảnh',dist:'9km từ TT Ninh Bình',maps:'https://maps.google.com/?q=Hang+Mua+Ninh+Binh'},
+  {name:'Chùa Bái Đính',type:'Tâm linh',dist:'15km từ TT Ninh Bình',maps:'https://maps.google.com/?q=Chua+Bai+Dinh+Ninh+Binh'},
+  {name:'Dê Chính Thư',type:'Nhà hàng đặc sản',dist:'Trung tâm TP',maps:'https://maps.google.com/?q=De+Chinh+Thu+Ninh+Binh'},
+  {name:'Mộc An Quán',type:'BBQ đặc sản',dist:'3km từ TT Ninh Bình',maps:'https://maps.google.com/?q=Moc+An+Quan+Ninh+Binh'},
+];
+
+const CL1 = [{i:'🪪',n:'CMND / CCCD'},{i:'🎫',n:'Đặt phòng homestay Hoa Lư'},{i:'💊',n:'Thuốc cá nhân (nếu có)'},{i:'💳',n:'Tiền mặt đủ (homestay không nhận thẻ)'},{i:'📱',n:'Đặt bàn nhà hàng dê trước'}];
+const CL2 = [{i:'📷',n:'Máy ảnh / điện thoại'},{i:'🔋',n:'Pin dự phòng'},{i:'📡',n:'Gimbal ổn định'},{i:'🚁',n:'Drone (nếu có)'},{i:'📐',n:'Tripod'},{i:'💾',n:'Thẻ nhớ đủ dung lượng'}];
+const CL3 = [{i:'👕',n:'Áo thoáng mát (nắng nhiều)'},{i:'🧴',n:'Kem chống nắng SPF50+'},{i:'👟',n:'Giày thể thao (leo núi)'},{i:'🎒',n:'Balo nhỏ tiện lợi'},{i:'🌂',n:'Ô / áo mưa nhỏ'}];
+
+let s1=new Array(CL1.length).fill(false),s2=new Array(CL2.length).fill(false),s3=new Array(CL3.length).fill(false);
+
+function buildHotels(){
+  document.getElementById('hotel-grid').innerHTML = HOTELS.map(h=>`
+    <div class="hotel-card ${h.topPick?'top-pick':''}">
+      <div class="hotel-photo" style="background:${h.emoji_bg}">
+        ${h.topPick?'<div class="hotel-badge-top">⭐ Top pick</div>':''}
+        <div class="hotel-photo-emoji">${h.icon}</div>
+      </div>
+      <div class="hotel-body">
+        <div class="hotel-name">${h.name}</div>
+        <div class="hotel-type">${h.type}</div>
+        <div class="hotel-rating">
+          <span class="hotel-stars">${'★'.repeat(Math.floor(h.rating))}${'☆'.repeat(5-Math.floor(h.rating))}</span>
+          <span class="hotel-score">${h.rating}</span>
+          <span class="hotel-count">(${h.count} đánh giá)</span>
+        </div>
+        <div class="hotel-highlights">${h.highlights.map(hl=>`<span class="hotel-highlight">✓ ${hl}</span>`).join('')}</div>
+        <p style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px">${h.desc}</p>
+        <div class="hotel-footer">
+          <div>
+            <div class="hotel-price">${h.price} <span>${h.unit}</span></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">📞 ${h.phone}</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="hotel-btn" style="background:var(--green-light);color:var(--green)" onclick="window.open('${h.maps}','_blank')">Xem Maps</button>
+            <button class="hotel-btn" onclick="window.open('${h.booking}','_blank')">Đặt phòng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildGallery(){
+  document.getElementById('gallery-grid').innerHTML = SPOTS.map((s,i)=>`
+    <div class="gallery-img" onclick="openLB(${i})">
+      <div class="gal-placeholder" style="aspect-ratio:${s.ratio};background:linear-gradient(135deg,${s.c1},${s.c2})">
+        <div class="gal-icon">${s.icon}</div>
+        <div class="gal-name">${s.name}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openLB(i){
+  const s=SPOTS[i];
+  document.getElementById('lightbox').classList.remove('hidden');
+  document.getElementById('lb-photo').innerHTML=`<span style="font-size:56px">${s.icon}</span>`;
+  document.getElementById('lb-photo').style.background=`linear-gradient(135deg,${s.c1},${s.c2})`;
+  document.getElementById('lb-name').textContent=s.name;
+  document.getElementById('lb-desc').textContent=s.desc;
+}
+function closeLB(){document.getElementById('lightbox').classList.add('hidden')}
+
+function buildChecklist(){
+  function render(arr,state,id){
+    document.getElementById(id).innerHTML=arr.map((c,i)=>`
+      <div class="check-item ${state[i]?'checked':''}" onclick="toggle('${id}',${i})">
+        <div class="check-box">${state[i]?'<span class="check-mark">✓</span>':''}</div>
+        <span class="check-icon">${c.i}</span>
+        <span class="check-name">${c.n}</span>
+      </div>
+    `).join('');
+  }
+  render(CL1,s1,'cl1');render(CL2,s2,'cl2');render(CL3,s3,'cl3');
+  const total=s1.length+s2.length+s3.length;
+  const done=s1.filter(Boolean).length+s2.filter(Boolean).length+s3.filter(Boolean).length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('check-pct').textContent=pct+'%';
+  document.getElementById('check-bar').style.width=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+function toggle(id,i){
+  if(id==='cl1')s1[i]=!s1[i];else if(id==='cl2')s2[i]=!s2[i];else s3[i]=!s3[i];
+  buildChecklist();
+}
+
+function buildMap(){
+  document.getElementById('map-list').innerHTML=PLACES.map((p,i)=>`
+    <div class="map-place">
+      <div class="map-num">${i+1}</div>
+      <div style="flex:1">
+        <div class="map-place-name">${p.name}</div>
+        <div class="map-place-meta"><span>📍 ${p.type}</span><span>🚗 ${p.dist}</span></div>
+      </div>
+      <button class="map-btn" onclick="window.open('${p.maps}','_blank')">Mở Maps →</button>
+    </div>
+  `).join('');
+}
+
+function show(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    const ns=['dashboard','timeline','hotel','food','gallery','budget','checklist','map'];
+    b.classList.toggle('active',ns[i]===name);
+  });
+  if(name==='gallery')buildGallery();
+  if(name==='hotel')buildHotels();
+}
+function showDay(d){
+  document.getElementById('day1').style.display=d===1?'block':'none';
+  document.getElementById('day2').style.display=d===2?'block':'none';
+  document.querySelectorAll('.day-tab').forEach((b,i)=>b.classList.toggle('active',i+1===d));
+}
+function countdown(){
+  const t=new Date('2025-07-20T05:30:00'),now=new Date(),diff=t-now;
+  if(diff<=0){document.getElementById('cd-d').textContent=document.getElementById('cd-h').textContent=document.getElementById('cd-m').textContent='00';return}
+  document.getElementById('cd-d').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+}
+buildChecklist();buildMap();countdown();setInterval(countdown,30000);
+</script>
+</body>
+</html>
